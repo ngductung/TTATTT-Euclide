@@ -250,7 +250,7 @@ public class EuclideView extends JFrame {
 				setResultB(arrayStrings[8]);
 			}
 		} catch (Exception e) {
-//			setOutputNone();
+			setOutputNone();
 			JOptionPane.showMessageDialog(this, "Lỗi tính toán", "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 

@@ -53,51 +53,94 @@ public class EuclideModel {
 	}
 
 	public String[] resultBin(String[] rowStrings) {
-		String qB, rB, xB, yB, a1B, b1B, x1B, x2B, y1B, y2B;
+		String qB, rB, xB, yB, aB, bB, x1B, x2B, y1B, y2B;
 
 		qB = rowStrings[0];
 		rB = rowStrings[1];
 		xB = rowStrings[2];
 		yB = rowStrings[3];
-		a1B = rowStrings[4];
-		b1B = rowStrings[5];
+		aB = rowStrings[4];
+		bB = rowStrings[5];
 		x2B = rowStrings[6];
 		x1B = rowStrings[7];
 		y2B = rowStrings[8];
 		y1B = rowStrings[9];
 
-		int q, r, x, y, a1, b1, x1, x2, y1, y2;
-		a1 = Integer.parseInt(a1B, 2);
-		b1 = Integer.parseInt(b1B, 2);
-		x2 = Integer.parseInt(x1B, 2);
-		x1 = Integer.parseInt(x2B, 2);
-		y2 = Integer.parseInt(y1B, 2);
-		y1 = Integer.parseInt(y2B, 2);
+		String[] temp = chiaBin(aB, bB);
+		
+		qB = temp[0]; //phan nguyen
+		rB = temp[1]; //phan du
+		if (!rB.equals("0")) {
+			
+		}
+		//xb = x1 - qb * x2
+		xB = Integer.toBinaryString(Integer.parseInt(x2B, 2) ^ Integer.parseInt(nhanBin(qB, x1B), 2));
+		//yb = y1 - qb * y2
+		yB = Integer.toBinaryString(Integer.parseInt(y2B, 2) ^ Integer.parseInt(nhanBin(qB, y1B), 2));
+		aB = bB;
+		bB = rB;
+		x2B = x1B;
+		x1B = xB;
+		y2B = y1B;
+		y1B = yB;
 
-		q = (int) a1 / b1;
-		r = Math.abs(a1 - q * b1);
-		x = Math.abs(x1 - q * x2);
-		y = Math.abs(y1 - q * y2);
-		a1 = b1;
-		b1 = r;
-		x2 = x1;
-		x1 = x;
-		y2 = y1;
-		y1 = y;
-
-		qB = Integer.toBinaryString(q);
-		rB = Integer.toBinaryString(r);
-		xB = Integer.toBinaryString(x);
-		yB = Integer.toBinaryString(y);
-		a1B = Integer.toBinaryString(a1);
-		b1B = Integer.toBinaryString(b1);
-		x2B = Integer.toBinaryString(x2);
-		x1B = Integer.toBinaryString(x1);
-		y2B = Integer.toBinaryString(y2);
-		y1B = Integer.toBinaryString(y1);
-
-		String[] arrayString = { qB, rB, xB, yB, a1B, b1B, x2B, x1B, y2B, y1B };
+		String[] arrayString = { qB, rB, xB, yB, aB, bB, x2B, x1B, y2B, y1B };
 
 		return arrayString;
+	}
+	
+	public String tinhDu(String a, String b) {
+		String result = "";
+		int intB = Integer.parseInt(b, 2);
+		result = a.substring(0, b.length());
+		int aS = Integer.parseInt(result.substring(0, b.length()), 2);
+		result = Integer.toBinaryString(aS ^ intB);
+		return result;
+	}
+	
+	public String[] chiaBin(String a, String b) {
+		String du = tinhDu(a, b);
+		a = a.substring(b.length(), a.length());
+		String nguyen = "1";
+		while (!a.equals("")) {
+			if (!du.equals("0")) {
+				int thieu = b.length() - du.length();
+				String bs = a.substring(0, thieu);
+				du += bs;
+				a = a.substring(thieu, a.length());
+				du = tinhDu(du, b);
+				nguyen += "1";
+			} else {
+				break;
+			}
+		}
+		String[] result = {nguyen, du};
+		return result;
+	}
+	
+	public String nhanBin(String a, String b) {
+		String[] binArrays = new String[a.length()];
+		for (int i = 0; i < a.length(); i++) {
+			String t = "";
+			for (int j = 0; j < a.length() - 1 - i; j++) {
+				t += "0";
+			}
+			binArrays[i] = a.substring(i, i + 1) + t;
+		}
+		String result = b;
+		for (int i = 0; i < binArrays.length; i++) {
+			String t = "";
+			for (int j = 0; j < binArrays[i].length() - 1; j++) {
+				t += "0";
+			}
+			binArrays[i] = b + t;
+		}
+		result = binArrays[0];
+		for (int i = 1; i < binArrays.length; i++) {
+			int t1 = Integer.parseInt(result, 2);
+			int t2 = Integer.parseInt(binArrays[i], 2);
+			result = Integer.toBinaryString(t1 ^ t2);
+		}
+		return result;
 	}
 }
